@@ -1,0 +1,328 @@
+<html>
+    <head>
+        <title>Food ordering app in 1 hour</title>
+        <style>
+            body{
+                height: 100vh; 
+                margin: 0px;
+             }
+             .nav-bar{
+                height: 16em;
+                background: forestgreen;
+                text-align: center; 
+                vertical-align: middle;
+                color: aliceblue;
+                font-weight: bold;
+                font-size: 20px;
+                font-family: sans-serif, Courier, monospace;
+                display: flex;
+                justify-content: center;
+                align-items: center; 
+                background-size: cover;
+                background: 
+                linear-gradient(
+                rgba(0, 0, 0, 0.5),
+                rgba(0, 0, 0, 0.5)
+                ),
+                    url(https://img.traveltriangle.com/blog/wp-content/uploads/2019/09/Street-Food-In-Patiala-cover.jpg) no-repeat center;
+                background-size: cover; 
+                background-attachment: fixed;
+                overflow: hidden;
+             }
+
+             .nav-bar p{
+                font-size: 2em;  
+                font-family: -webkit-pictograph;
+             }
+
+             .searchbox{
+                margin: 20px;
+                text-align: center;
+             }
+             #search{
+                width: 30em;
+                height: 50px;
+                font-size: 18px;
+             }
+
+             .favorites{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 10px;
+             }
+
+            .main-container{
+                display: flex;
+                flex-wrap: wrap;
+                margin: 10px;
+                justify-content: center;
+            }
+            .food-card{ 
+                height: 250px;
+                width: 250px;
+                border: 1px solid gray;
+                margin: 10px;
+                padding: 20px;
+                border-radius: 20px;
+                position: relative;  
+                background-size: cover !important;
+            }
+ 
+            .food-card-title{
+                color: white;
+                font-size: 24px;
+                font-family: sans-serif;
+                font-weight: bold;
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                padding: 20px 0px;
+                background: inherit;
+                background-attachment: fixed;
+            }
+
+            .food-card-title::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0; 
+                height: 100%;
+                background: inherit;
+                background-attachment: fixed; 
+            }
+ 
+            .food-card-price{
+                color: white;
+                font-size: 22px;
+                font-family: sans-serif; 
+            }
+            .food-card:hover{
+                box-shadow: 3px 9px 21px -8px rgba(0,0,0,0.45);
+            } 
+
+            #rating{
+                font-family: sans-serif;
+                font-weight: bold;
+            }
+             
+            .topright{
+                position: absolute;
+                top: 10px;
+                right: 10px;
+            }
+        </style>
+        <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js" integrity="sha512-zT3zHcFYbQwjHdKjCu6OMmETx8fJA9S7E6W7kBeFxultf75OPTYUJigEKX58qgyQMi1m1EgenfjMXlRZG8BXaw==" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        <div class="nav-bar"><p>Food Order App in 1 hour</p></div>
+        <div class="searchbox">
+            <input id="search" 
+            name="search" 
+            type="text" 
+            placeholder="Search for the food!" 
+            autocomplete="off" 
+            onkeyup="onFilterList(event.target.value)"/> 
+        </div>
+        <div class="favorites">
+            <input type="checkbox" id="Favorites" name="favorite" value="Favorite" onclick='handleFavoritesClick(this);'>
+            <label for="Favorites">Show me favorites</label><br>
+        </div>
+        <div class="main-container"></div>
+
+    <script>
+        const Key = 'Favorite';
+        let response = {
+            data:[
+                {
+                    "id":1,
+                    "name":"Pizzahut",
+                    "price":"20",
+                    "rating":"4.5",
+                    "favorite": false,
+                    "image":"https://spoonacular.com/recipeImages/579247-556x370.jpg"
+                },
+                {
+                    "id":2,
+                    "name":"Burger King",
+                    "price":"10",
+                    "rating":"2.5",
+                    "favorite": false,
+                    "image":"https://images.spoonacular.com/file/wximages/423186-636x393.png"
+                },
+                {
+                    "id":3,
+                    "name":"KS Bakers",
+                    "price":"20",
+                    "rating":"3.5",
+                    "favorite": false,
+                    "image":"https://spoonacular.com/recipeImages/579247-556x370.jpg"
+                },
+                {
+                    "id":4,
+                    "name":"Chocolate wala",
+                    "price":"200",
+                    "rating":"2.5",
+                    "favorite": false,
+                    "image":"https://spoonacular.com/recipeImages/579247-556x370.jpg"
+                },
+                {
+                    "id":5,
+                    "name":"The Five Fishermen",
+                    "price":"20",
+                    "rating":"4.5",
+                    "favorite": false,
+                    "image":"https://images.spoonacular.com/file/wximages/423186-636x393.png"
+                },
+                {
+                    "id":6,
+                    "name":"Forbes Island",
+                    "price":"120",
+                    "rating":"5",
+                    "favorite": false,
+                    "image":"https://images.spoonacular.com/file/wximages/423186-636x393.png"
+                },
+                {
+                    "id":7,
+                    "name":"The Disaster Café",
+                    "price":"20",
+                    "rating":"4.5",
+                    "favorite": false,
+                    "image":"https://spoonacular.com/recipeImages/579247-556x370.jpg"
+                },
+                {
+                    "id":8,
+                    "name":"Parallax ",
+                    "price":"20",
+                    "rating":"4.5",
+                    "favorite": false,
+                    "image":"https://spoonacular.com/recipeImages/579247-556x370.jpg"
+                },
+                {
+                    "id":9,
+                    "name":"Dinner in the sky",
+                    "price":"20",
+                    "rating":"4.5",
+                    "favorite": false,
+                    "image":"https://spoonacular.com/recipeImages/579247-556x370.jpg"
+                }
+            ]
+        }
+        let restoCard= function(data){ 
+            const {name,price, rating, id, favorite, image} = data;    
+            Handlebars.registerHelper('sum', function(item) { 
+                console.log((item/5*100).toFixed(2))
+                return Math.floor(item/5*100);
+            });
+  
+            var template = Handlebars.compile( 
+           `<div class="food-card" style="background:url({{image}}) no-repeat center center"> 
+            {{#if favorite}}
+            <i class="fa fa-heart topright" id={{id}}></i>    
+            {{else}}
+            <i class="fa fa-heart-o topright" id={{id}}></i>    
+            {{/if}}
+                   
+            <p class="food-card-title">{{name}}</p>
+            <p class="food-card-price">Price <span>{{price}} Rs</span></p> 
+            <p><span id="rating">Rating</span>
+            <span class="stars-active" style="width:{{sum rating}}%">
+                <i class="fa fa-star" aria-hidden="true"></i>
+                <i class="fa fa-star" aria-hidden="true"></i>
+                <i class="fa fa-star" aria-hidden="true"></i>
+                <i class="fa fa-star" aria-hidden="true"></i>
+                <i class="fa fa-star-half" aria-hidden="true"></i>
+            </span>
+            </p>
+            </div>`);
+
+            return template({name,price,rating,id,favorite, image})
+        }
+
+        let makeFavorite = function(event){
+            console.log(event.target.id)
+            let id = event.target.id - 1;
+            // set into local storage
+            let favorites = getFromStorage();            
+            let saveItem = response.data[id];
+            if(!favorites){ 
+                saveToStorage(saveItem);
+                getView(response.data);
+            }else{
+                // check whether already it is saved or not 
+                let items = JSON.parse(favorites);
+                let isExist = items.find((item)=>{
+                   return item.id == event.target.id;
+                });
+                if(!isExist){ 
+                    saveToStorage(saveItem);        
+                    getView(response.data);      
+                }else{
+                    // remove favorite item
+                    removeFavorite(event.target.id);    
+                    getView(response.data);      
+                }
+            }
+        } 
+
+        let getFavorite = function(restoObject){      
+            let favItems = JSON.parse(getFromStorage());
+            let itemExist = favItems && favItems.find((item)=>{
+                   return item.id == restoObject.id;
+                }); 
+            restoObject.favorite = itemExist?true:false; 
+        }
+
+        let removeFavorite = function(id){
+           let favItems = JSON.parse(getFromStorage());
+           let newFavs =  favItems && favItems.filter((item)=>{
+                   return item.id != id;
+                });
+            localStorage.setItem(Key,JSON.stringify(newFavs));
+        }
+
+        let saveToStorage = function(item){
+            let data= JSON.parse(getFromStorage())?JSON.parse(getFromStorage()):[]; 
+            localStorage.setItem(Key,JSON.stringify([...data,item]));
+        }
+
+        let getFromStorage = function(){
+            return localStorage.getItem(Key);
+        }
+
+        let handleFavoritesClick = function(checkbox){
+            let data;
+            if(checkbox.checked){
+                data = JSON.parse(getFromStorage()); 
+            }else{
+                data = response.data;
+            }
+            getView(data);
+        }
+
+        let getView = function(response){
+            let view='';
+            for(let i=0;i<response.length;i++){
+                getFavorite(response[i]);
+                view+=restoCard(response[i], i);
+            }
+
+            let mainContainer = document.querySelector('.main-container');
+            mainContainer.addEventListener('click',makeFavorite);
+            mainContainer.innerHTML = view;  
+        }
+
+        const onFilterList = function(searchTerm){  
+            let filteredResponse = response.data.filter((item)=>{
+                return item.name.toLowerCase().indexOf(searchTerm.toLowerCase())!==-1?item:null
+            })
+            getView(filteredResponse);
+        }
+
+        getView(response.data);
+    </script>
+    </body>
+</html>
